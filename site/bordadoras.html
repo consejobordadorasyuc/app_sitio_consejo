@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Las bordadoras · Consejo Estatal de Bordadoras Mayas de Yucatán</title>
+  <meta name="description" content="Directorio de bordadoras integrantes del Consejo Estatal de Bordadoras Mayas de Yucatán, con sus comunidades, técnicas y trayectorias.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/componentes.css">
+  <link rel="stylesheet" href="assets/css/paginas-internas.css">
+  <link rel="icon" type="image/png" href="assets/img/logo-consejo.png">
+</head>
+
+<body>
+  <header class="header">
+    <div class="header__contenedor">
+      <a href="index.html" class="header__marca" aria-label="Inicio">
+        <img src="assets/img/logo-consejo.png" alt="" class="header__logo">
+        <div class="header__nombre">
+          <span class="header__nombre-principal">Consejo de Bordadoras</span>
+          <span class="header__nombre-secundario">Yucatán · México</span>
+        </div>
+      </a>
+      
+      <nav class="nav" aria-label="Navegación principal">
+        <ul class="nav__lista">
+          <li><a class="nav__link" href="index.html">Inicio</a></li>
+          <li><a class="nav__link" href="quienes-somos.html">Quiénes somos</a></li>
+          <li><a class="nav__link" href="consejeras.html">Las consejeras</a></li>
+          <li><a class="nav__link" href="bordadoras.html" aria-current="page">Las bordadoras</a></li>
+          <li><a class="nav__link" href="catalogo.html">Catálogo</a></li>
+          <li><a class="nav__link" href="contacto.html">Contacto</a></li>
+        </ul>
+        <button class="nav__toggle" aria-label="Abrir menú" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <header class="page-header">
+      <div class="page-header__contenedor">
+        <div class="page-header__eyebrow">
+          <span class="page-header__eyebrow-linea"></span>
+          <span class="page-header__eyebrow-texto">Directorio</span>
+        </div>
+        <h1 class="page-header__titulo">Las <em>bordadoras</em></h1>
+        <p class="page-header__subtitulo">
+          Las bordadoras cuyo trabajo está disponible en el catálogo del Consejo. Algunas son también integrantes del Consejo Estatal; otras se han sumado al catálogo aportando su oficio.
+        </p>
+      </div>
+    </header>
+
+    <section class="prosa" style="padding-block: var(--esp-12);">
+      <div class="prosa__contenedor">
+        <p>
+          En este directorio aparecen las bordadoras que han puesto piezas a la venta en el catálogo del Consejo. Cada una trabaja desde su comunidad, en su propio ritmo y con sus técnicas particulares. Al contactarlas por WhatsApp, además de adquirir una pieza, se establece un vínculo directo con quien la elaboró.
+        </p>
+        <p>
+          Las bordadoras marcadas como <em>Consejeras</em> son también integrantes del Consejo Estatal: su biografía completa, así como la del resto de las 24 integrantes electas, está disponible en la <a href="consejeras.html">página de las consejeras</a>.
+        </p>
+      </div>
+    </section>
+
+    <section class="bordadoras-grid" style="padding-block: var(--esp-16);">
+      <div class="bordadoras-grid__contenedor">
+        <div id="bordadoras-grid" class="bordadoras-grid__lista">
+          <div class="cargando" style="grid-column: 1/-1;">Cargando directorio…</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__contenedor">
+      <div class="footer__grid">
+        <div class="footer__marca">
+          <div class="footer__logo-titulo">
+            <img src="assets/img/logo-consejo.png" alt="" class="footer__logo">
+            <h3 class="footer__titulo-bloque">Consejo Estatal<br>de Bordadoras<br>Mayas de Yucatán</h3>
+          </div>
+          <p class="footer__descripcion">
+            Bordadoras de comunidades mayas de Yucatán organizadas para salvaguardar el bordado tradicional yucateco.
+          </p>
+        </div>
+        <div>
+          <h4 class="footer__columna-titulo">Explora</h4>
+          <ul class="footer__lista">
+            <li><a href="quienes-somos.html">Quiénes somos</a></li>
+            <li><a href="consejeras.html">Las consejeras</a></li>
+            <li><a href="bordadoras.html">Las bordadoras</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__columna-titulo">Apoya</h4>
+          <ul class="footer__lista">
+            <li><a href="contacto.html">Contacto general</a></li>
+            <li><a href="contacto.html">Apóyanos / Colabora</a></li>
+            <li><a href="contacto.html">Para prensa</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__columna-titulo">Síguenos</h4>
+          <ul class="footer__lista">
+            <li><a data-config-href="instagram_url" href="#" rel="noopener">Instagram</a></li>
+            <li><a data-config-href="facebook_url" href="#" rel="noopener">Facebook</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="footer__divisor">
+      <div class="footer__inferior">
+        <span>© 2026 Consejo Estatal de Bordadoras Mayas de Yucatán</span>
+        <div class="footer__aliados">
+          <span>Con el apoyo de <span data-config="aliados">…</span></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/js/bordadoras.js"></script>
+</body>
+</html>

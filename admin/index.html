@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin · Consejo Estatal de Bordadoras</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <section id="loginScreen" class="screen login-screen">
+      <div class="login-card">
+        <p class="eyebrow">Panel privado</p>
+        <h1>Consejo Estatal de Bordadoras</h1>
+        <p class="muted">Actualiza productos, bordadoras, consejeras y textos del sitio desde una interfaz sencilla.</p>
+        <div id="apiUrlBlock">
+          <label>URL del Apps Script</label>
+          <input id="apiUrlInput" type="url" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" />
+        </div>
+        <p id="configuredApiMessage" class="configured-api hidden">URL del Apps Script configurada.</p>
+        <label>Contraseña de administración</label>
+        <input id="passwordInput" type="password" placeholder="Contraseña" autocomplete="current-password" />
+        <button id="loginBtn" class="primary">Entrar</button>
+        <p id="loginMessage" class="message"></p>
+      </div>
+    </section>
+
+    <section id="adminScreen" class="screen hidden">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Administración</p>
+          <h1>Catálogo del Consejo</h1>
+        </div>
+        <div class="top-actions">
+          <button id="refreshBtn" class="secondary">Actualizar datos</button>
+          <button id="logoutBtn" class="ghost">Salir</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <aside class="sidebar">
+          <button class="nav active" data-tab="productos">Productos</button>
+          <button class="nav" data-tab="bordadoras">Bordadoras</button>
+          <button class="nav" data-tab="consejeras">Consejeras</button>
+          <button class="nav" data-tab="configuracion">Configuración</button>
+        </aside>
+
+        <section class="content">
+          <div id="status" class="status hidden"></div>
+
+          <section id="tab-productos" class="tab active">
+            <div class="section-head">
+              <div>
+                <h2>Productos</h2>
+                <p class="muted">Crea, edita, publica u oculta piezas del catálogo.</p>
+              </div>
+              <button id="newProductBtn" class="primary">Nuevo producto</button>
+            </div>
+            <div class="toolbar">
+              <input id="productSearch" type="search" placeholder="Buscar producto, municipio o bordadora" />
+              <select id="productStateFilter"><option value="">Todos los estados</option></select>
+            </div>
+            <div id="productsList" class="cards"></div>
+            <form id="productForm" class="editor hidden"></form>
+          </section>
+
+          <section id="tab-bordadoras" class="tab">
+            <div class="section-head">
+              <div>
+                <h2>Bordadoras</h2>
+                <p class="muted">Administra fichas de artesanas y datos de contacto.</p>
+              </div>
+              <button id="newBordadoraBtn" class="primary">Nueva bordadora</button>
+            </div>
+            <input id="bordadoraSearch" type="search" placeholder="Buscar bordadora o municipio" />
+            <div id="bordadorasList" class="cards"></div>
+            <form id="bordadoraForm" class="editor hidden"></form>
+          </section>
+
+          <section id="tab-consejeras" class="tab">
+            <div class="section-head">
+              <div>
+                <h2>Consejeras</h2>
+                <p class="muted">Administra integrantes del Consejo y sus semblanzas.</p>
+              </div>
+              <button id="newConsejeraBtn" class="primary">Nueva consejera</button>
+            </div>
+            <input id="consejeraSearch" type="search" placeholder="Buscar consejera o cargo" />
+            <div id="consejerasList" class="cards"></div>
+            <form id="consejeraForm" class="editor hidden"></form>
+          </section>
+
+          <section id="tab-configuracion" class="tab">
+            <div class="section-head">
+              <div>
+                <h2>Configuración del sitio</h2>
+                <p class="muted">Edita valores de contacto, redes y textos cortos. No cambies las claves.</p>
+              </div>
+              <button id="saveConfigBtn" class="primary">Guardar configuración</button>
+            </div>
+            <div id="configEditor" class="config-grid"></div>
+          </section>
+        </section>
+      </main>
+    </section>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

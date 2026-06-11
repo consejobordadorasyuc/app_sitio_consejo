@@ -1,0 +1,321 @@
+/* ============================================================
+   BASE.CSS — Sistema de diseño del sitio del Consejo Estatal
+   de Bordadoras Mayas de Yucatán
+   
+   Contiene:
+     1. Variables (paleta, tipografía, espaciado, transiciones)
+     2. Reset y normalización
+     3. Tipografía base
+     4. Utilidades comunes
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. VARIABLES — paleta extraída del logotipo del Consejo
+   ------------------------------------------------------------ */
+:root {
+  /* === Colores institucionales === */
+  --c-dorado: #B09040;          /* Color institucional principal — borde y letras del logo */
+  --c-dorado-claro: #D4B570;
+  --c-dorado-oscuro: #8C7030;
+  
+  --c-azul: #0070A0;             /* Azul ceibo — del centro del logo */
+  --c-azul-claro: #4DA3C8;
+  --c-azul-oscuro: #004F70;
+  
+  --c-verde: #106020;            /* Verde milpa */
+  --c-verde-claro: #2F8C42;
+  
+  --c-magenta: #C01080;          /* Magenta flor — el acento expresivo */
+  --c-magenta-claro: #E04AA8;
+  
+  /* === Neutros cálidos === */
+  --c-crema: #F8F4E8;            /* Fondo principal — crema cálido, no blanco frío */
+  --c-crema-claro: #FBF8EE;
+  --c-crema-oscuro: #EFE8D2;
+  --c-marfil: #FFFCF5;
+  
+  --c-tinta: #2A2419;            /* Texto principal — marrón muy oscuro, más cálido que negro */
+  --c-tinta-suave: #4A4133;
+  --c-piedra: #8A7F6E;            /* Texto secundario */
+  --c-piedra-claro: #C4BCAC;
+  
+  /* === Tipografía === */
+  --fuente-display: "Cormorant Garamond", "Georgia", serif;
+  --fuente-cuerpo: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --fuente-mono: "JetBrains Mono", "Courier New", monospace;
+  
+  --tamano-base: 1rem;            /* 16px */
+  --tamano-xs: 0.75rem;
+  --tamano-sm: 0.875rem;
+  --tamano-md: 1rem;
+  --tamano-lg: 1.125rem;
+  --tamano-xl: 1.5rem;
+  --tamano-2xl: 2rem;
+  --tamano-3xl: 2.75rem;
+  --tamano-4xl: 4rem;
+  --tamano-5xl: 5.5rem;
+  
+  --linea-apretada: 1.1;
+  --linea-normal: 1.5;
+  --linea-suelta: 1.7;
+  
+  /* === Espaciado (sistema 8px) === */
+  --esp-1: 0.25rem;
+  --esp-2: 0.5rem;
+  --esp-3: 0.75rem;
+  --esp-4: 1rem;
+  --esp-6: 1.5rem;
+  --esp-8: 2rem;
+  --esp-12: 3rem;
+  --esp-16: 4rem;
+  --esp-20: 5rem;
+  --esp-24: 6rem;
+  --esp-32: 8rem;
+  
+  /* === Anchos de contenedor === */
+  --ancho-narrow: 720px;
+  --ancho-text: 880px;
+  --ancho-default: 1200px;
+  --ancho-wide: 1400px;
+  
+  /* === Bordes === */
+  --radio-sm: 4px;
+  --radio-md: 8px;
+  --radio-lg: 16px;
+  --radio-xl: 24px;
+  --radio-pill: 999px;
+  
+  /* === Sombras (sutiles, no dramáticas) === */
+  --sombra-sm: 0 1px 2px rgba(42, 36, 25, 0.06);
+  --sombra-md: 0 4px 12px rgba(42, 36, 25, 0.08);
+  --sombra-lg: 0 12px 32px rgba(42, 36, 25, 0.10);
+  --sombra-card: 0 1px 3px rgba(42, 36, 25, 0.06), 0 8px 24px rgba(42, 36, 25, 0.04);
+  
+  /* === Transiciones === */
+  --t-rapida: 150ms ease-out;
+  --t-media: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --t-lenta: 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ------------------------------------------------------------
+   2. RESET Y NORMALIZACIÓN
+   ------------------------------------------------------------ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--fuente-cuerpo);
+  font-size: var(--tamano-base);
+  line-height: var(--linea-normal);
+  color: var(--c-tinta);
+  background-color: var(--c-crema);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  
+  /* Sutil textura de papel — no agresiva */
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(176, 144, 64, 0.025) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 112, 160, 0.02) 0%, transparent 50%);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--c-azul-oscuro);
+  text-decoration: none;
+  transition: color var(--t-rapida);
+}
+
+a:hover {
+  color: var(--c-magenta);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ------------------------------------------------------------
+   3. TIPOGRAFÍA BASE
+   ------------------------------------------------------------ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--fuente-display);
+  font-weight: 500;
+  line-height: var(--linea-apretada);
+  color: var(--c-tinta);
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+h4 {
+  font-size: var(--tamano-xl);
+}
+
+p {
+  line-height: var(--linea-suelta);
+  color: var(--c-tinta-suave);
+}
+
+p + p {
+  margin-top: var(--esp-4);
+}
+
+/* Estilo distintivo: párrafo introductorio (lead) */
+.lead {
+  font-family: var(--fuente-display);
+  font-size: var(--tamano-xl);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--c-tinta);
+  font-style: italic;
+}
+
+/* Texto en mayúsculas espaciado — para etiquetas de sección */
+.eyebrow {
+  font-family: var(--fuente-cuerpo);
+  font-size: var(--tamano-sm);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-dorado-oscuro);
+}
+
+/* ------------------------------------------------------------
+   4. CONTENEDORES Y UTILIDADES
+   ------------------------------------------------------------ */
+
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho-default);
+  margin-inline: auto;
+  padding-inline: var(--esp-6);
+}
+
+.contenedor-narrow {
+  max-width: var(--ancho-narrow);
+  margin-inline: auto;
+  padding-inline: var(--esp-6);
+}
+
+.contenedor-text {
+  max-width: var(--ancho-text);
+  margin-inline: auto;
+  padding-inline: var(--esp-6);
+}
+
+/* Líneas decorativas doradas — sello visual del sitio */
+.linea-dorada {
+  display: block;
+  width: 60px;
+  height: 1px;
+  background-color: var(--c-dorado);
+  margin-block: var(--esp-6);
+}
+
+.linea-dorada--centrada {
+  margin-inline: auto;
+}
+
+/* Sección base */
+section {
+  padding-block: var(--esp-20);
+}
+
+@media (max-width: 768px) {
+  section {
+    padding-block: var(--esp-12);
+  }
+}
+
+/* Accesibilidad: ocultar visualmente pero accesible para screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Animación de aparición al cargar — usada con stagger */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.aparece {
+  animation: aparecer 0.8s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+/* Patrón decorativo: punto de cruz como acento */
+.cruz {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  position: relative;
+  vertical-align: middle;
+}
+
+.cruz::before,
+.cruz::after {
+  content: "";
+  position: absolute;
+  background-color: currentColor;
+}
+
+.cruz::before {
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  transform: translateY(-50%);
+}
+
+.cruz::after {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  transform: translateX(-50%);
+}
