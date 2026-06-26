@@ -1,5 +1,4 @@
-// Copia este archivo como config.js si quieres fijar la URL del Apps Script.
-// También puedes pegar la URL directamente en la pantalla de login.
+// Copia este archivo como config.js y fija aquí la URL del Apps Script.
 window.CEBY_ADMIN_CONFIG = {
-  API_URL: ""
+  API_URL: 'https://script.google.com/macros/s/PEGA_AQUI_TU_DESPLIEGUE/exec'
 };

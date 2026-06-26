@@ -5,25 +5,25 @@
   };
 
   const headers = {
-    productos: ['ID','Bordadora ID','Estado','Destacado','Nombre de la pieza','Categoría','Técnica','Descripción','Materiales','Medidas','Tiempo de elaboración','Precio (MXN)','Nombre del archivo de foto','URL de foto (automático)','Bordadora','Municipio','Localidad','WhatsApp (10 dígitos)','Link de WhatsApp (automático)','Fecha de alta','Notas internas'],
+    productos: ['ID','Bordadora ID','Estado','Nombre de la pieza','Categoría','Técnica','Descripción','Materiales','Medidas','Tiempo de elaboración','Precio (MXN)','Nombre del archivo de foto','URL de foto (automático)','Bordadora','Municipio','Localidad','WhatsApp (10 dígitos)','Link de WhatsApp (automático)','Fecha de alta','Notas internas'],
     bordadoras: ['ID','Nombre completo','Es consejera','Municipio','Localidad','WhatsApp','Técnica principal','Años de experiencia','Nombre del archivo de foto','URL de foto (automático)','Biografía breve'],
     consejeras: ['ID','Bordadora ID','Nombre completo','Municipio','Localidad','Edad','Años de experiencia','Cargo en el Consejo','Colectivo o marca','Nombre del archivo de foto','URL de foto (automático)','Biografía']
   };
 
   const schema = {
     productos: [
-      ['ID','hidden'], ['Estado','select:Estados'], ['Destacado','select:SiNo'], ['Nombre de la pieza','text'], ['Categoría','select:Categorías'], ['Técnica','select:Técnicas'],
+      ['ID','hidden'], ['Estado','select:Estados'], ['Nombre de la pieza','text'], ['Categoría','select:Categorías'], ['Técnica','select:Técnicas'],
       ['Descripción','textarea','wide'], ['Materiales','textarea','wide'], ['Medidas','text'], ['Tiempo de elaboración','text'], ['Precio (MXN)','number'],
       ['Nombre del archivo de foto','image'], ['URL de foto (automático)','hidden'], ['Bordadora','selectRef:Bordadoras'], ['Bordadora ID','hidden'], ['Municipio','text', true], ['Localidad','text', true],
       ['WhatsApp (10 dígitos)','tel', true], ['Link de WhatsApp (automático)','hidden'], ['Fecha de alta','hidden'], ['Notas internas','textarea','wide']
     ],
     bordadoras: [
-      ['ID','text', true], ['Nombre completo','text'], ['Es consejera','select:SiNo'], ['Municipio','select:Municipios'], ['Localidad','text'], ['WhatsApp','tel'],
-      ['Técnica principal','select:Técnicas'], ['Años de experiencia','number'], ['Nombre del archivo de foto','image'], ['URL de foto (automático)','url', true], ['Biografía breve','textarea','wide']
+      ['ID','hidden'], ['Nombre completo','text'], ['Es consejera','select:SiNo'], ['Municipio','select:Municipios'], ['Localidad','text'], ['WhatsApp','tel'],
+      ['Años de experiencia','number'], ['Nombre del archivo de foto','image'], ['URL de foto (automático)','hidden'], ['Biografía breve','textarea','wide']
     ],
     consejeras: [
       ['ID','text', true], ['Nombre completo','selectRef:Bordadoras'], ['Bordadora ID','hidden'], ['Municipio','text', true], ['Localidad','text', true], ['Edad','number'], ['Años de experiencia','number'],
-      ['Cargo en el Consejo','text'], ['Colectivo o marca','text'], ['Nombre del archivo de foto','image'], ['URL de foto (automático)','url', true], ['Biografía','textarea','wide']
+      ['Cargo en el Consejo','text'], ['Colectivo o marca','text'], ['Nombre del archivo de foto','image'], ['URL de foto (automático)','hidden'], ['Biografía','textarea','wide']
     ]
   };
 
@@ -111,6 +111,7 @@
 
   function listFrom(name) {
     if (name === 'SiNo') return ['Sí','No'];
+    if (name === 'Estados') return ['Borrador','Publicada'];
     if (name === 'Bordadoras') return (state.data?.bordadoras || []).map(r => r['Nombre completo']).filter(Boolean);
     return state.data?.listas?.[name] || [];
   }
@@ -153,7 +154,7 @@
   }
 
   function renderAll() {
-    renderProducts(); renderBordadoras(); renderConsejeras(); renderConfig();
+    renderProducts(); renderBordadoras(); renderConsejeras(); renderConfig(); renderOptions();
   }
 
   function isDirectImageUrl(value) {
@@ -184,15 +185,15 @@
       title: r['Nombre de la pieza'] || '(Sin nombre)',
       subtitle: `${r.Categoría || 'Sin categoría'} · ${r.Municipio || 'Sin municipio'} · ${r.Bordadora || 'Sin bordadora'}`,
       img: imageUrl(r),
-      badges: [r.Estado, r.Destacado === 'Sí' ? 'Destacado' : '', r['Precio (MXN)'] ? `$${r['Precio (MXN)']} MXN` : ''].filter(Boolean),
+      badges: [r.Estado, r['Precio (MXN)'] ? `$${r['Precio (MXN)']} MXN` : ''].filter(Boolean),
       type: 'productos'
     })).join('') || '<p class="muted">No hay productos con esos filtros.</p>';
   }
 
   function renderBordadoras() {
     const term = $('bordadoraSearch').value.toLowerCase();
-    const rows = (state.data?.bordadoras || []).filter(r => [r['Nombre completo'], r.Municipio, r.Localidad, r['Técnica principal']].join(' ').toLowerCase().includes(term));
-    $('bordadorasList').innerHTML = rows.map(r => cardHtml({ id: r.ID, title: r['Nombre completo'], subtitle: `${r.Municipio || ''} · ${r['Técnica principal'] || ''}`, img: imageUrl(r), badges: [r['Es consejera'] === 'Sí' ? 'Consejera' : '', r.WhatsApp ? 'WhatsApp' : ''].filter(Boolean), type: 'bordadoras' })).join('') || '<p class="muted">No hay bordadoras.</p>';
+    const rows = (state.data?.bordadoras || []).filter(r => [r['Nombre completo'], r.Municipio, r.Localidad].join(' ').toLowerCase().includes(term));
+    $('bordadorasList').innerHTML = rows.map(r => cardHtml({ id: r.ID, title: r['Nombre completo'], subtitle: `${r.Municipio || ''} · ${r.Localidad || ''}`, img: imageUrl(r), badges: [r['Es consejera'] === 'Sí' ? 'Consejera' : '', r.WhatsApp ? 'WhatsApp' : ''].filter(Boolean), type: 'bordadoras' })).join('') || '<p class="muted">No hay bordadoras.</p>';
   }
 
   function renderConsejeras() {
@@ -207,7 +208,7 @@
     return `<article class="card">
       ${thumb}
       <div><h3>${safeTitle}</h3><p>${escapeHtml(subtitle || '')}</p><div class="badges">${badges.map(b => `<span class="badge">${escapeHtml(b)}</span>`).join('')}</div></div>
-      <div class="card-actions"><button class="small" data-edit="${type}" data-id="${escapeAttr(id)}">Editar</button><button class="small danger" data-hide="${type}" data-id="${escapeAttr(id)}">Ocultar</button></div>
+      <div class="card-actions"><button class="small" data-edit="${type}" data-id="${escapeAttr(id)}">Editar</button><button class="small danger" data-delete="${type}" data-id="${escapeAttr(id)}">Eliminar</button></div>
     </article>`;
   }
 
@@ -218,7 +219,7 @@
 
   function openForm(type, id = '') {
     const rows = state.data[type] || [];
-    const row = id ? rows.find(r => r.ID === id) : {};
+    const row = id ? rows.find(r => r.ID === id) : (type === 'productos' ? { Estado: 'Borrador' } : {});
     if (!row && id) return;
     const form = $(`${singular(type)}Form`);
     form.dataset.type = type;
@@ -394,13 +395,47 @@
     return new Promise((resolve, reject) => { const fr = new FileReader(); fr.onload = () => resolve(fr.result); fr.onerror = reject; fr.readAsDataURL(file); });
   }
 
-  async function hideRecord(type, id) {
-    if (!confirm('¿Ocultar este registro? No se borrará; solo cambiará su estado cuando aplique.')) return;
-    const action = type === 'productos' ? 'hideProduct' : type === 'bordadoras' ? 'hideBordadora' : 'hideConsejera';
+  async function deleteRecord(type, id) {
+    const labels = { productos: 'producto', bordadoras: 'bordadora', consejeras: 'consejera' };
+    if (!confirm(`¿Eliminar definitivamente este ${labels[type] || 'registro'}? Esta acción quitará la fila de Google Sheets y no se puede deshacer.`)) return;
+    const action = type === 'productos' ? 'deleteProduct' : type === 'bordadoras' ? 'deleteBordadora' : 'deleteConsejera';
     const json = await api(action, { id });
     state.data[type] = json.rows;
     renderAll();
-    showStatus('Registro ocultado.');
+    showStatus('Registro eliminado.');
+  }
+
+  function renderOptions() {
+    const categories = state.data?.listas?.['Categorías'] || [];
+    const techniques = state.data?.listas?.['Técnicas'] || [];
+    $('categoriesOptions').value = categories.join('\n');
+    $('techniquesOptions').value = techniques.join('\n');
+  }
+
+  function parseOptions(value) {
+    const seen = new Set();
+    return String(value || '').split(/\r?\n/).map(v => v.trim()).filter(v => {
+      const key = v.toLocaleLowerCase('es');
+      if (!v || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  async function saveOptions() {
+    const listas = {
+      'Categorías': parseOptions($('categoriesOptions').value),
+      'Técnicas': parseOptions($('techniquesOptions').value),
+      'Estados': ['Borrador', 'Publicada']
+    };
+    if (!listas['Categorías'].length) throw new Error('Agrega al menos una categoría.');
+    if (!listas['Técnicas'].length) throw new Error('Agrega al menos una técnica.');
+    showStatus('Guardando opciones...', 'warn');
+    const json = await api('saveLists', { listas });
+    state.data.listas = json.listas;
+    populateFilters();
+    renderOptions();
+    showStatus('Opciones actualizadas.');
   }
 
   async function saveConfig() {
@@ -431,10 +466,11 @@
     $('bordadoraSearch').addEventListener('input', renderBordadoras);
     $('consejeraSearch').addEventListener('input', renderConsejeras);
     $('saveConfigBtn').addEventListener('click', () => saveConfig().catch(err => showStatus(err.message, 'error')));
+    $('saveOptionsBtn').addEventListener('click', () => saveOptions().catch(err => showStatus(err.message, 'error')));
     ['productForm','bordadoraForm','consejeraForm'].forEach(id => $(id).addEventListener('submit', e => submitForm(e).catch(err => showStatus(err.message, 'error'))));
     document.body.addEventListener('click', e => {
       const edit = e.target.closest('[data-edit]'); if (edit) openForm(edit.dataset.edit, edit.dataset.id);
-      const hide = e.target.closest('[data-hide]'); if (hide) hideRecord(hide.dataset.hide, hide.dataset.id).catch(err => showStatus(err.message, 'error'));
+      const del = e.target.closest('[data-delete]'); if (del) deleteRecord(del.dataset.delete, del.dataset.id).catch(err => showStatus(err.message, 'error'));
       if (e.target.closest('[data-cancel-form]')) e.target.closest('form').classList.add('hidden');
     });
     document.body.addEventListener('input', e => {

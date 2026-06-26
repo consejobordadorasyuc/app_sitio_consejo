@@ -13,11 +13,8 @@
         <p class="eyebrow">Panel privado</p>
         <h1>Consejo Estatal de Bordadoras</h1>
         <p class="muted">Actualiza productos, bordadoras, consejeras y textos del sitio desde una interfaz sencilla.</p>
-        <div id="apiUrlBlock">
-          <label>URL del Apps Script</label>
-          <input id="apiUrlInput" type="url" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" />
-        </div>
-        <p id="configuredApiMessage" class="configured-api hidden">URL del Apps Script configurada.</p>
+        <div id="apiUrlBlock" class="hidden"><input id="apiUrlInput" type="hidden" /></div>
+        <p id="configuredApiMessage" class="configured-api">Conexión configurada.</p>
         <label>Contraseña de administración</label>
         <input id="passwordInput" type="password" placeholder="Contraseña" autocomplete="current-password" />
         <button id="loginBtn" class="primary">Entrar</button>
@@ -42,6 +39,7 @@
           <button class="nav active" data-tab="productos">Productos</button>
           <button class="nav" data-tab="bordadoras">Bordadoras</button>
           <button class="nav" data-tab="consejeras">Consejeras</button>
+          <button class="nav" data-tab="opciones">Categorías y técnicas</button>
           <button class="nav" data-tab="configuracion">Configuración</button>
         </aside>
 
@@ -88,6 +86,28 @@
             <input id="consejeraSearch" type="search" placeholder="Buscar consejera o cargo" />
             <div id="consejerasList" class="cards"></div>
             <form id="consejeraForm" class="editor hidden"></form>
+          </section>
+
+
+          <section id="tab-opciones" class="tab">
+            <div class="section-head">
+              <div>
+                <h2>Categorías y técnicas</h2>
+                <p class="muted">Agrega, corrige o elimina opciones. Escribe una opción por línea.</p>
+              </div>
+              <button id="saveOptionsBtn" class="primary">Guardar opciones</button>
+            </div>
+            <div class="options-grid">
+              <div>
+                <label for="categoriesOptions">Categorías</label>
+                <textarea id="categoriesOptions" rows="14" placeholder="Una categoría por línea"></textarea>
+              </div>
+              <div>
+                <label for="techniquesOptions">Técnicas</label>
+                <textarea id="techniquesOptions" rows="14" placeholder="Una técnica por línea"></textarea>
+              </div>
+            </div>
+            <p class="help">Los cambios se guardan en la hoja “Listas” de Google Sheets y aparecen de inmediato en los formularios de productos.</p>
           </section>
 
           <section id="tab-configuracion" class="tab">

@@ -39,9 +39,10 @@ function doPost(e) {
     if (action === 'saveProduct') return json({ ok: true, rows: saveRecord_('productos', payload.record, 'P') });
     if (action === 'saveBordadora') return json({ ok: true, rows: saveRecord_('bordadoras', payload.record, 'B') });
     if (action === 'saveConsejera') return json({ ok: true, rows: saveRecord_('consejeras', payload.record, 'C') });
-    if (action === 'hideProduct') return json({ ok: true, rows: hideRecord_('productos', payload.id) });
-    if (action === 'hideBordadora') return json({ ok: true, rows: hideRecord_('bordadoras', payload.id) });
-    if (action === 'hideConsejera') return json({ ok: true, rows: hideRecord_('consejeras', payload.id) });
+    if (action === 'deleteProduct') return json({ ok: true, rows: deleteRecord_('productos', payload.id) });
+    if (action === 'deleteBordadora') return json({ ok: true, rows: deleteRecord_('bordadoras', payload.id) });
+    if (action === 'deleteConsejera') return json({ ok: true, rows: deleteRecord_('consejeras', payload.id) });
+    if (action === 'saveLists') return json({ ok: true, listas: saveLists_(payload.listas || {}) });
     if (action === 'saveConfig') return json({ ok: true, rows: saveConfig_(payload.rows || []) });
     if (action === 'uploadImage') return json({ ok: true, file: uploadImage_(payload) });
 
@@ -160,7 +161,17 @@ function saveRecord_(key, record, prefix) {
     if (idExistsInOtherRow_(sh, id, headers.indexOf(idHeader) + 1, rowIndex)) {
       throw new Error('El ID ya existe: ' + id);
     }
+    if (rowIndex) {
+      const existing = objectFromRow_(headers, sh.getRange(rowIndex, 1, 1, headers.length).getDisplayValues()[0]);
+      Object.keys(existing).forEach(function(header) {
+        if (record[header] === undefined) record[header] = existing[header];
+      });
+    }
     record.ID = id;
+    if (key === 'productos') {
+      const allowedStates = ['Borrador', 'Publicada'];
+      if (allowedStates.indexOf(String(record.Estado || '').trim()) === -1) record.Estado = 'Borrador';
+    }
     normalizeRelations_(key, record);
     validateRecord_(key, record);
     applyAutomatics_(key, record);
@@ -305,20 +316,80 @@ function onlyDigits_(value) {
   return String(value || '').replace(/\D/g, '').slice(-10);
 }
 
-function hideRecord_(key, id) {
+function deleteRecord_(key, id) {
   const sh = sheet_(key);
   const headers = readHeaders_(sh);
   const idCol = headers.indexOf('ID') + 1;
   const rowIndex = findRowById_(sh, id, idCol);
   if (!rowIndex) throw new Error('No se encontró el registro ' + id);
-  const estadoCol = headers.indexOf('Estado') + 1;
-  if (estadoCol) {
-    sh.getRange(rowIndex, estadoCol).setValue('Oculta');
-  } else {
-    // Para bordadoras/consejeras, si no hay Estado, no borramos: agregamos/actualizamos una nota interna si existe.
-    sh.hideRows(rowIndex);
+
+  if (key === 'bordadoras') {
+    const bordadoraRow = objectFromRow_(headers, sh.getRange(rowIndex, 1, 1, headers.length).getDisplayValues()[0]);
+    const bordadoraName = normalizePersonKey_(bordadoraRow['Nombre completo']);
+    const productRefs = readTable_('productos').filter(function(r) {
+      return String(r['Bordadora ID'] || '').trim() === String(id).trim() ||
+        (bordadoraName && normalizePersonKey_(r.Bordadora) === bordadoraName);
+    });
+    const councilRefs = readTable_('consejeras').filter(function(r) {
+      return String(r['Bordadora ID'] || '').trim() === String(id).trim() ||
+        (bordadoraName && normalizePersonKey_(r['Nombre completo']) === bordadoraName);
+    });
+    if (productRefs.length || councilRefs.length) {
+      throw new Error('No se puede eliminar esta bordadora porque está vinculada con ' + productRefs.length + ' producto(s) y ' + councilRefs.length + ' consejera(s). Elimina o reasigna primero esos registros.');
+    }
   }
+
+  let linkedBordadoraId = '';
+  if (key === 'consejeras') {
+    const councilRow = objectFromRow_(headers, sh.getRange(rowIndex, 1, 1, headers.length).getDisplayValues()[0]);
+    linkedBordadoraId = String(councilRow['Bordadora ID'] || '').trim();
+    if (!linkedBordadoraId) {
+      const linked = findBordadoraForRecord_(councilRow, 'Nombre completo');
+      linkedBordadoraId = linked ? linked.ID : '';
+    }
+  }
+
+  sh.deleteRow(rowIndex);
+
+  if (key === 'consejeras' && linkedBordadoraId) {
+    const remaining = readTable_('consejeras').some(function(r) { return String(r['Bordadora ID'] || '').trim() === linkedBordadoraId; });
+    if (!remaining) setBordadoraConsejera_(linkedBordadoraId, 'No');
+  }
+
   return enrichImageRows_(readTable_(key), getDriveImageMapCached_());
+}
+
+function setBordadoraConsejera_(bordadoraId, value) {
+  if (!bordadoraId) return;
+  const sh = sheet_('bordadoras');
+  const headers = readHeaders_(sh);
+  const rowIndex = findRowById_(sh, bordadoraId, headers.indexOf('ID') + 1);
+  const col = headers.indexOf('Es consejera') + 1;
+  if (rowIndex && col) sh.getRange(rowIndex, col).setValue(value || 'No');
+}
+
+function saveLists_(listas) {
+  const sh = sheet_('listas');
+  const allowed = ['Categorías', 'Técnicas', 'Estados'];
+  const existingHeaders = readHeaders_(sh);
+
+  allowed.forEach(function(name) {
+    if (!Object.prototype.hasOwnProperty.call(listas, name)) return;
+    let values = Array.isArray(listas[name]) ? listas[name] : [];
+    values = values.map(function(v) { return String(v || '').trim(); }).filter(Boolean);
+    if (name === 'Estados') values = ['Borrador', 'Publicada'];
+
+    let col = existingHeaders.indexOf(name) + 1;
+    if (!col) {
+      col = sh.getLastColumn() + 1;
+      sh.getRange(1, col).setValue(name);
+      existingHeaders.push(name);
+    }
+    const rowsToClear = Math.max(sh.getMaxRows() - 1, 1);
+    sh.getRange(2, col, rowsToClear, 1).clearContent();
+    if (values.length) sh.getRange(2, col, values.length, 1).setValues(values.map(function(v) { return [v]; }));
+  });
+  return readLists_();
 }
 
 function readLists_() {
